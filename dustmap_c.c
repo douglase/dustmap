@@ -20,6 +20,7 @@
 
 int dustmap_c(int argc, void *argv[]) {
 
+  printf("(Hi1)\n" );
 
   //dustmap_c.c
   //Last updated 26 June 2014
@@ -38,9 +39,12 @@ int dustmap_c(int argc, void *argv[]) {
   //Note that IDL is not neccessary--you can create your own wrapper if you want.
   //Note: all scalars are interpreted below as passed-by-value, so dustmap.c won't change them
   int j = 0;
+  //argv is a list of pointers to things
   double *histo = (double *) argv[j]; j++;     //The final image, passed by reference
   int histoxsize = *(int *) argv[j]; j++;
   int histoysize = *(int *) argv[j]; j++;
+  printf("histoysize (%i)\n",histoxsize );
+
   char *inputfilelist = (char *) argv[j]; j++; //Concatenated strings of input files from IDL
   int numfiles = *(int *) argv[j]; j++;        //number of input file strings to expect
   int datatype = *(int *) argv[j]; j++;        //The data type (see dmgetdata.c)
@@ -74,6 +78,7 @@ int dustmap_c(int argc, void *argv[]) {
   float generic_oc_exp = *(float *) argv[j]; j++;   //An input exponent for the Qabs/Qsca power law; non-zero value overides values from lnkfile
   float generic_oc_albedo = *(float *) argv[j]; j++;           //An input albedo to adjust generic Qsca
   int HG_flag = *(int *) argv[j]; j++;         //Print a lot of info
+
   float HG_g = *(float *) argv[j]; j++;     //An input g value; non-zero value overides values from lnkfile
   int extinction_flag = *(int *) argv[j]; j++;      //Signals that extinction of the star light should be taken into account
   float xshift = *(float *) argv[j]; j++;           //A left-right shift in the viewing direction (AU)
@@ -97,7 +102,7 @@ int dustmap_c(int argc, void *argv[]) {
   //-----------------------------------------------
 
 
-
+  printf("(Hi 3)\n" );
 
 
   //-------------------- DEFINITIONS --------------------
@@ -121,16 +126,16 @@ int dustmap_c(int argc, void *argv[]) {
   float *r_list;
   r_list = (float *) malloc (nr * sizeof(float));
   if (r_list==NULL) {fprintf(stderr,"ERROR: memory acquisition failed when creating r array.\n"); exit (1);}
-  
+
   float *Tvsr_list;
   Tvsr_list = (float *) malloc (nr * sizeof(float));
   if (Tvsr_list==NULL) {fprintf(stderr,"ERROR: memory acquisition failed when creating temperature array.\n"); exit (1);}
-  
-  float *Qabs_value; 
+
+  float *Qabs_value;
   Qabs_value = (float *) malloc (nlambda * sizeof(float));
   if (Qabs_value==NULL) {fprintf(stderr,"ERROR: memory acquisition failed when creating Qabs_value array.\n"); exit (1);}
 
-  float *Qsca_value; 
+  float *Qsca_value;
   Qsca_value = (float *) malloc (nlambda * sizeof(float));
   if (Qsca_value==NULL) {fprintf(stderr,"ERROR: memory acquisition failed when creating Qsca_value array.\n"); exit (1);}
 
@@ -142,7 +147,7 @@ int dustmap_c(int argc, void *argv[]) {
   datatype3 *data=NULL;
   datatype3 *markdata;
   float *Qwave=NULL, *Qabs=NULL, *Qsca=NULL, *Qpfunc=NULL;
-  
+
   for(i=0;i<npfunc;i++) costheta[i] = i*2.0/(npfunc-1) - 1.0; //calculate costheta array -- only has to be done once, needs to have constant dcostheta
   //-----------------------------------------------------
 
@@ -170,17 +175,17 @@ int dustmap_c(int argc, void *argv[]) {
   deltajmax += 10;
 
   //Now create an array of inputfiles, each with length deltajmax
-  inputfiles = (char **) malloc(numfiles * sizeof(char *));   // allocate storage for an array of pointers   
+  inputfiles = (char **) malloc(numfiles * sizeof(char *));   // allocate storage for an array of pointers
   if (inputfiles==NULL) {fprintf(stderr,"ERROR: memory acquisition failed when creating inputfile array.\n"); exit (1);}
   for (i = 0; i < numfiles; i++) {
     inputfiles[i] = (char *) malloc(deltajmax * sizeof(char));   // for each pointer, allocate storage for an array of chars
-    if (inputfiles[i] == NULL) {fprintf(stderr,"ERROR: memory acquisition failed when creating inputfile array.\n"); exit (1);} 
+    if (inputfiles[i] == NULL) {fprintf(stderr,"ERROR: memory acquisition failed when creating inputfile array.\n"); exit (1);}
   }
 
   //Now print the concatenated strings into an array of strings
   j=0;
   for(i=0;i<numfiles;i++) {
-    sprintf(inputfiles[i],"%s",&inputfilelist[j]);    
+    sprintf(inputfiles[i],"%s",&inputfilelist[j]);
     j += (1 + strcspn (&inputfilelist[j],"\0"));
   }
 
@@ -271,15 +276,15 @@ int dustmap_c(int argc, void *argv[]) {
     }
   }
   //---------------------------------------------------------------
-  
-  
-  
+
+
+
   //-------------------- MAIN LOOP --------------------
 
   prevdustradius=0.0;
   irdust = -1;
   for(ifile=0;ifile<numfiles;ifile++){ //loop through all input files
-    
+
     //Load the data
     dmgetdata(inputfiles[ifile], datatype, scaling[ifile], &data, &ndatapoints, az_sym);
 
@@ -299,7 +304,7 @@ int dustmap_c(int argc, void *argv[]) {
       if(dustradius[ifile] != prevdustradius) { //must calculate OCs if this is true
 	irdust++;
 	prevdustradius=dustradius[ifile];
-	  
+
 	//If desired, calculate Qabs, Qsca, and scattering phase function using Mie theory
 	if (generic_oc_flag <= 0) {
 
@@ -339,7 +344,7 @@ int dustmap_c(int argc, void *argv[]) {
 	if (generic_oc_flag > 0) {
 	  twoPIs = 2.0 * PI * dustradius[ifile];
 	  for(ilambda=0;ilambda<nlambda;ilambda++){
-	    if(lambda[ilambda] < twoPIs) { 
+	    if(lambda[ilambda] < twoPIs) {
 	      Qabs_value[ilambda] = 1.;
 	    }
 	    else {
@@ -357,7 +362,7 @@ int dustmap_c(int argc, void *argv[]) {
 	  Qabs = (float *) malloc (nQwave * sizeof(float));
 	  if (Qabs==NULL) {fprintf(stderr,"ERROR: memory acquisition failed when creating Qabs in generic_oc_flag section.\n"); exit (1);}
 	  for(ilambda=0;ilambda<nQwave;ilambda++) {
-	    if(Qwave[ilambda] < twoPIs) { 
+	    if(Qwave[ilambda] < twoPIs) {
 	      Qabs[ilambda] = 1.;
 	    }
 	    else {
@@ -365,7 +370,7 @@ int dustmap_c(int argc, void *argv[]) {
 	    }
 	  }
 	}
-	
+
 	//If desired, calculate scattering phase function w/ a Henyey-Greenstein function
 	if (scatteredlight_flag > 0 && HG_flag > 0) {
 	  for(ilambda=0;ilambda<nlambda;ilambda++){
@@ -375,10 +380,10 @@ int dustmap_c(int argc, void *argv[]) {
 	    for(ipfunc=0;ipfunc<npfunc;ipfunc++) pfunc_out[irdust+ilambda*nrdust+ipfunc*nlambda*nrdust] = pfunc[ilambda+nlambda*ipfunc];
 	  }
 	}
-	
+
 	//Calculate temperature as a function of circumstellar distance
 	//Need to do this for scattered light, too, so that tsublimate works
-	if (thermalemission_flag == 1 || scatteredlight_flag == 1) {  
+	if (thermalemission_flag == 1 || scatteredlight_flag == 1) {
 	  for(i=0;i<nr;i++) r_list[i] = minr * pow(10.,delta_log_r * i); //calculate r_list array
 
 	  double *tempBnustar; //create an array to contain stellar spectrum
@@ -390,18 +395,18 @@ int dustmap_c(int argc, void *argv[]) {
 	  free(tempBnustar); //free stellar spectrum
 	}
 
-	
+
       } //end of prevdustradius if statement
 
-      
+
     } //end of scattered light or thermal emission flag if statement
 
 
-    //Create the image    
+    //Create the image
     dm2d(histo, histoxsize, histoysize, data, ndatapoints, fovx, fovy, pixelsize, inclination, longitude, distance, pa, lambda, nlambda, Qabs_value, Qsca_value, dustradius[ifile], Bnustar, Rstar, Tvsr_list, delta_log_r, nr, log10minr, Tsublimate, pfunc, npfunc, Qwave, Qabs, nQwave, iwa, aitoff_flag, densityhisto_flag, opticaldepth_flag, scatteredlight_flag, thermalemission_flag, extinction_flag, xshift, effrdust, distmask);
 
-  }  
-  
+  }
+
   if(verbose_flag >= 1) {printf("\rProgress: %3.0f%% complete\n", 100.0); fflush(stdout);}
 
   //Free memory

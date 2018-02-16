@@ -34,3 +34,4 @@ typedef struct {
   double intensity;
 } datatype4;
 
+int dustmap_c(int argc, void *argv[]);
