@@ -43,7 +43,7 @@ void cos_doubles(double * in_array,
    int size);
 
 
-void dustmap_call(double * hist,// = (double *) argv[j]; j++;     //The final image, passed by reference
+void dustmap(double * hist,// = (double *) argv[j]; j++;     //The final image, passed by reference
   int histoxsize,// = *(int *) argv[j]; j++;
   int histoysize,// = *(int *) argv[j]; j++;
   char * inputfilelist ,//= (char *) argv[j]; j++; //Concatenated strings of input files from IDL
