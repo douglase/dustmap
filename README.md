@@ -1,6 +1,4 @@
-Adapted for python by Ewan Douglas (UArizona/MIT @douglase) and Yinzi Xin (Caltech/MIT @yinzi-xin)
-
-
+Added functionality to interface with a python wrapper [https://github.com/douglase/dustmapPy](dustmapPy) by Ewan Douglas (UArizona/MIT @douglase) and Yinzi Xin (Caltech/MIT @yinzi-xin).
 
 
 dustmap v3.1.2
