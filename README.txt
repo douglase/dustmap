@@ -1,4 +1,11 @@
+Adapted for python by Ewan Douglas (UArizona/MIT @douglase) and Yinzi Xin (Caltech/MIT @yinzi-xin)
+
+
+
+
 dustmap v3.1.2
+
+
 Last updated 4 Apr 2015
 
 Written by Christopher Stark
