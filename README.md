@@ -1,5 +1,5 @@
 3 Jan 2020:
-Added functionality to interface with a python wrapper [https://github.com/douglase/dustmapPy](dustmapPy) by Ewan Douglas (UArizona/MIT @douglase) and Yinzi Xin (Caltech/MIT @yinzi-xin).
+Added functionality to interface with a python wrapper [(dustmapPy)](https://github.com/douglase/dustmapPy) by Ewan Douglas (UArizona/MIT @douglase) and Yinzi Xin (Caltech/MIT @yinzi-xin).
 
 
 dustmap v3.1.2
